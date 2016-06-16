@@ -10,7 +10,7 @@ try:
 	codelist=cur.fetchall()
 	for code in codelist:
 		#print code[0]
-		pre_data2 = ystockquote.get_historical_prices(code[0],'20160101','20160601')
+		pre_data2 = ystockquote.get_historical_prices(code[0],'20160101','20160201')
 		if  pre_data2[0][0].find('doctype') >= 0:
 			continue
 		processed_data2 = json.dumps(pre_data2,sort_keys=False,indent=4)
