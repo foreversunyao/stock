@@ -7,10 +7,11 @@ try:
 	conn=MySQLdb.connect(host='127.0.0.1',user='p_stock',passwd='p_stock',db='db_stock',port=3307)
 	cur=conn.cursor()
 	cur.execute('select code from tb_americanstockcode')
+	#cur.execute('select code from tb_stockinfo_day')
 	codelist=cur.fetchall()
 	for code in codelist:
 		#print code[0]
-		pre_data2 = ystockquote.get_historical_prices(code[0],'20160101','20160201')
+		pre_data2 = ystockquote.get_historical_prices(code[0],'20160501','20160601')
 		if  pre_data2[0][0].find('doctype') >= 0:
 			continue
 		processed_data2 = json.dumps(pre_data2,sort_keys=False,indent=4)
@@ -18,7 +19,7 @@ try:
                 for data in pre_data2:
 			if data[0].find('Date') >= 0:
 				continue
-			sql_ex="insert into db_stock.tb_stockinfo_day values('"+data[0]+"','"+code[0]+"',"+data[1]+","+data[2]+","+data[3]+","+data[4]+","+data[5]+","+data[6]+")"	 
+			sql_ex="insert into db_stock.tb_stockinfo_day(stat_date,stock_code,open,high,low,close,volume,adjclose) values('"+data[0]+"','"+code[0]+"',"+data[1]+","+data[2]+","+data[3]+","+data[4]+","+data[5]+","+data[6]+")"	 
 	                print sql_ex
 			cur.execute(sql_ex)
 		cur.execute("commit")
