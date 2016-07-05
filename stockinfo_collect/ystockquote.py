@@ -27,6 +27,7 @@ sample usage:
 
 def __request(symbol, stat):
     url = 'http://finance.yahoo.com/d/quotes.csv?s=%s&f=%s' % (symbol, stat)
+    print url
     return urllib.urlopen(url).read().strip().strip('"')
 
 
