@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import ystockquote
 import json
 import MySQLdb
 import sys
+import time
 
 if len(sys.argv) <> 3:
     print "Usage: " + sys.argv[0] + " 20160101 20160102"
@@ -12,18 +13,19 @@ s_date = sys.argv[1]
 e_date = sys.argv[2]
 
 try:
-	conn=MySQLdb.connect(host='127.0.0.1',user='p_stock',passwd='p_stock',db='db_stock',port=3307)
+	conn=MySQLdb.connect(host='127.0.0.1',user='root',passwd='admin',db='db_stock',port=3307)
 	cur=conn.cursor()
 	#sql= "delete from tb_stockinfo_day where stat_date>='s%' and end_date<'s%'" % (s_date,e_date)
 	cur.execute('delete from tb_stockinfo_day where stat_date>="%s" and stat_date<"%s"' % (s_date,e_date))
 	cur.execute("commit")
+	init=0
 	cur.execute('select code from tb_americanstockcode')
 	#cur.execute('select code from tb_stockinfo_day')
 	codelist=cur.fetchall()
 	for code in codelist:
 #		print code[0]
 		pre_data2 = ystockquote.get_historical_prices(code[0],s_date,e_date)
-#		print pre_data2
+		print pre_data2
 		if  pre_data2[0][0].find('doctype') >= 0:
 			continue
 		processed_data2 = json.dumps(pre_data2,sort_keys=False,indent=4)

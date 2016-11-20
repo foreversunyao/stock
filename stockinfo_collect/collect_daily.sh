@@ -1,8 +1,8 @@
 #!/bin/bash
-today=$(date -v-0d +"%Y%m%d")
-yesterday=$(date -v-1d +"%Y%m%d")
+today=$(date -d "-365 day" +"%Y%m%d")
+yesterday=$(date -d "-2 day" +"%Y%m%d")
 echo $today $yesterday
-/usr/local/bin/python stockinfo_collect.py $yesterday $today
+/usr/bin/python2.7 stockinfo_collect.py $yesterday $today
 if [ $? -eq 0 ]
 then
 	echo "success"

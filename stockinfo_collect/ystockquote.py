@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 #
 #  Copyright (c) 2007-2008, Corey Goldberg (corey@goldb.org)
 #
@@ -10,8 +10,9 @@
 #  version 2.1 of the License, or (at your option) any later version.
 
 
-import urllib
-
+import urllib2
+import logging
+import socket
 
 """
 This is the "ystockquote" module.
@@ -28,7 +29,7 @@ sample usage:
 def __request(symbol, stat):
     url = 'http://finance.yahoo.com/d/quotes.csv?s=%s&f=%s' % (symbol, stat)
     print url
-    return urllib.urlopen(url).read().strip().strip('"')
+    return urllib2.urlopen(url).read().strip().strip('"')
 
 
 def get_all(symbol):
@@ -158,7 +159,17 @@ def get_historical_prices(symbol, start_date, end_date):
           'b=%s&' % str(int(start_date[6:8])) + \
           'c=%s&' % str(int(start_date[0:4])) + \
           'ignore=.csv'
-    days = urllib.urlopen(url).readlines()
-    data = [day[:-2].split(',') for day in days]
+    socket.setdefaulttimeout(10)
+    d=str(start_date[0:4])+"-"+str(start_date[4:6])+"-"+str(start_date[6:8])
+    print d
+    try:
+    	r = urllib2.urlopen(url)
+	print "reading"
+    	days = r.readlines()
+    	data = [day[:-2].split(',') for day in days]
+	print data
+    except Exception as e:
+	data =[['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Clos'], [d, '-1', '-1', '-1', '-1', '-1', '-1']]
+	logging.exception(e)
     return data
         
